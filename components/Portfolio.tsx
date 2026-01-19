@@ -1,6 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { PORTFOLIO_DATA } from '../data';
+import { PORTFOLIO_DATA as RAW_DATA } from '../data';
 import { Play, Pause, AudioLines, Disc } from 'lucide-react';
+
+interface PortfolioItem {
+  title: string;
+  artist?: string;
+  color: string;
+  audioUrl: string;
+  cover: string;
+}
+
+const PORTFOLIO_DATA = RAW_DATA as PortfolioItem[];
 
 const Portfolio: React.FC = () => {
   const [playingIdx, setPlayingIdx] = useState<number | null>(null);

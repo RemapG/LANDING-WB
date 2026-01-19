@@ -85,13 +85,6 @@ const Contact: React.FC = () => {
                 <h3 className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mb-6">Локация</h3>
                 <p className="text-lg font-bold mb-2 leading-tight">Кемерово,<br/>ул. Карболитовская, 1/3</p>
                 <a href="mailto:woodbazestudio@gmail.com" className="text-white/50 hover:text-white transition-colors text-sm break-all mb-8">woodbazestudio@gmail.com</a>
-                
-                <div className="mt-auto w-full">
-                    <a href="#" className="flex items-center justify-center gap-3 py-4 bg-white/5 hover:bg-[#0077FF] hover:text-white transition-all border border-white/5 hover:border-[#0077FF]/50 group/btn w-full">
-                        <Globe size={20} className="group-hover/btn:animate-pulse" />
-                        <span className="text-xs font-bold tracking-[0.2em] font-accent">VKONTAKTE</span>
-                    </a>
-                </div>
              </div>
           </div>
 
