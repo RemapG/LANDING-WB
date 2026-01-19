@@ -20,7 +20,7 @@ const Contact: React.FC = () => {
               <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 text-[#ccff00] group-hover:scale-110 group-hover:bg-[#ccff00] group-hover:text-black transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <Phone size={32} />
               </div>
-              <h3 className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mb-6">Sound Engineer</h3>
+              <h3 className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mb-6">ГЛЕБ</h3>
               
               <a href="tel:+79609267385" className="block text-2xl font-bold font-accent tracking-tighter hover:text-[#ccff00] transition-colors mb-8 whitespace-nowrap">
                 +7 (960) 926-73-85
@@ -51,7 +51,7 @@ const Contact: React.FC = () => {
               <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 text-[#ccff00] group-hover:scale-110 group-hover:bg-[#ccff00] group-hover:text-black transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <Phone size={32} />
               </div>
-              <h3 className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mb-6">Manager</h3>
+              <h3 className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mb-6">МАКСИМ</h3>
               
               <a href="tel:+79515877083" className="block text-2xl font-bold font-accent tracking-tighter hover:text-[#ccff00] transition-colors mb-8 whitespace-nowrap">
                 +7 (951) 587-70-83
