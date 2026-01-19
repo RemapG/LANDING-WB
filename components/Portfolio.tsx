@@ -9,30 +9,54 @@ const Portfolio: React.FC = () => {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const togglePlay = (idx: number, url: string) => {
-    if (playingIdx === idx) {
-      if (audioRef.current?.paused) {
-        audioRef.current.play();
+  const togglePlay = async (idx: number, url: string) => {
+    if (!audioRef.current) return;
+
+    // Helper to safely play
+    const safePlay = async () => {
+      try {
+        await audioRef.current?.play();
         setIsPlaying(true);
+      } catch (error) {
+        console.error("Play failed:", error);
+        setIsPlaying(false);
+        // Don't alert immediately on interrupt errors, as they are common during rapid switching
+      }
+    };
+
+    if (playingIdx === idx) {
+      // Toggle current track
+      if (audioRef.current.paused) {
+        await safePlay();
       } else {
-        audioRef.current?.pause();
+        audioRef.current.pause();
         setIsPlaying(false);
       }
     } else {
-      if (audioRef.current) {
-        audioRef.current.src = url;
-        audioRef.current.play().then(() => {
-          setIsPlaying(true);
-        }).catch(err => console.error("Audio error:", err));
-      }
+      // Play new track
+      // Pause previous
+      audioRef.current.pause();
+      setIsPlaying(false);
+      
+      // Update state for UI immediately
       setPlayingIdx(idx);
+      
+      // Set source
+      audioRef.current.src = url;
+      audioRef.current.load();
+      
+      // Play
+      await safePlay();
     }
   };
 
   const stopAudio = () => {
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      // Only reset time if metadata is loaded to avoid "The operation is not supported"
+      if (audioRef.current.readyState > 0) {
+        audioRef.current.currentTime = 0;
+      }
     }
     setPlayingIdx(null);
     setIsPlaying(false);
@@ -52,9 +76,12 @@ const Portfolio: React.FC = () => {
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-      setCurrentTime(time);
+    if (audioRef.current && Number.isFinite(time)) {
+      // Safe seek
+      if (audioRef.current.readyState > 0) {
+        audioRef.current.currentTime = time;
+        setCurrentTime(time);
+      }
     }
   };
 
@@ -65,11 +92,15 @@ const Portfolio: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const toggleGlobalPlay = () => {
+  const toggleGlobalPlay = async () => {
     if (audioRef.current) {
       if (audioRef.current.paused) {
-        audioRef.current.play();
-        setIsPlaying(true);
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch (e) {
+          console.error("Global play error", e);
+        }
       } else {
         audioRef.current.pause();
         setIsPlaying(false);
@@ -81,12 +112,14 @@ const Portfolio: React.FC = () => {
     <div className="container mx-auto px-6 relative pb-24 md:pb-0">
       <audio 
         ref={audioRef} 
-        onEnded={() => { setPlayingIdx(null); setIsPlaying(false); }}
+        crossOrigin="anonymous"
+        onEnded={() => { setIsPlaying(false); }}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         className="hidden"
+        preload="metadata"
       />
 
       <div className="mb-12 md:mb-20">
@@ -122,7 +155,7 @@ const Portfolio: React.FC = () => {
                     {work.title}
                   </h3>
                   <p className="text-xs md:text-sm text-white/40 font-bold tracking-[0.2em] mt-2 uppercase group-hover:text-white/60 transition-colors">
-                    {work.artist}
+                    {work.artist || 'WOODBAZE'}
                   </p>
                </div>
 
@@ -152,7 +185,7 @@ const Portfolio: React.FC = () => {
             {/* Play & Stop Controls */}
             <div className="flex items-center gap-4 md:gap-6 shrink-0">
               <button 
-                onClick={toggleGlobalPlay}
+                onClick={(e) => { e.stopPropagation(); toggleGlobalPlay(); }}
                 className="w-10 h-10 md:w-14 md:h-14 bg-[#ccff00] rounded-full flex items-center justify-center hover:scale-105 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] text-black"
               >
                 {isPlaying ? (
@@ -163,7 +196,7 @@ const Portfolio: React.FC = () => {
               </button>
               
               <button 
-                onClick={stopAudio}
+                onClick={(e) => { e.stopPropagation(); stopAudio(); }}
                 className="w-10 h-10 md:w-14 md:h-14 border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 transition-all text-white"
                 title="Stop"
               >
@@ -179,7 +212,7 @@ const Portfolio: React.FC = () => {
                     {PORTFOLIO_DATA[playingIdx].title}
                   </span>
                   <span className="text-white/30 text-[9px] md:text-[10px] font-bold uppercase tracking-widest truncate">
-                    {PORTFOLIO_DATA[playingIdx].artist}
+                    {PORTFOLIO_DATA[playingIdx].artist || 'WOODBAZE'}
                   </span>
                 </div>
               </div>
@@ -206,7 +239,7 @@ const Portfolio: React.FC = () => {
             {/* Close Button */}
             <div className="flex items-center shrink-0">
               <button 
-                onClick={stopAudio}
+                onClick={(e) => { e.stopPropagation(); stopAudio(); }}
                 className="text-white/20 hover:text-white transition-colors p-2"
                 title="Закрыть"
               >
