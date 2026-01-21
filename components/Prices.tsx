@@ -2,7 +2,7 @@ import React from 'react';
 
 const prices = [
   { name: 'ЗАПИСЬ ВОКАЛА', price: 'от 2 000 ₽', unit: '/час', best: false },
-  { name: 'СВЕДЕНИЕ + МАСТЕР', price: 'от 8 000 ₽', unit: '/трек', best: true },
+  { name: 'СВЕДЕНИЕ + МАСТЕРИНГ', price: 'от 8 000 ₽', unit: '/трек', best: true },
   { name: 'АВТОТЮН / ПРАВКА', price: 'от 2 500 ₽', unit: '/вокал', best: false },
   { name: 'ПЕСНЯ ПОД КЛЮЧ', price: 'от 25 000 ₽', unit: '/песня', best: false },
 ];
